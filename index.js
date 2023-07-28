@@ -21,6 +21,8 @@ class PlazoFijo {
 let valorInvertido = Number(prompt("Ingrese el monto a invertir"));
 let tasaAnual = Number(prompt("Ingrese la tasa anual (ej: 0.6)"));
 let plazo = Number(prompt("Ingrese el plazo de su inversión (en días)"));
+let inversionesSimuladas = [];
+let inversionesSimuladasConPlazoMayorA30;
 
 function simularPlazoFijo() {
   while (tasaAnual <= 0 || tasaAnual > 0.99) {
@@ -30,12 +32,18 @@ function simularPlazoFijo() {
       )
     );
   }
-
-  let primeraInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
-  return primeraInversion.calculoPlazoFijo();
+  let nuevaInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
+  inversionesSimuladas.push(nuevaInversion);
+  return nuevaInversion.calculoPlazoFijo();
 }
 
 console.log(simularPlazoFijo());
+console.log(inversionesSimuladas);
+
+inversionesSimuladasConPlazoMayorA30 = inversionesSimuladas.filter(
+  (el) => el.plazo > 30
+);
+console.log(inversionesSimuladasConPlazoMayorA30);
 
 let valorDolarHoy = Number(prompt("Ingrese el valor del dolar actualmente"));
 let valorDolarFuturoEstimado = Number(
