@@ -1,67 +1,107 @@
-alert("Bienvenido al simulador de Plazo Fijo VS Dolar!");
-
-alert(
-  "Para calcular el resultado final de su inversion en PF, ingrese el valor que desea invertir, la tasa anual en decimales y el plazo en dias"
-);
-
 class PlazoFijo {
   constructor(valorInvertido, tasaAnual, plazo) {
-    this.plazo = plazo;
-    this.tasaAnual = tasaAnual;
     this.valorInvertido = valorInvertido;
+    this.tasaAnual = tasaAnual;
+    this.plazo = plazo;
   }
 
   calculoPlazoFijo() {
-    let interesGanado =
+    const interesGanado =
       (this.valorInvertido * this.tasaAnual * this.plazo) / 365;
     return this.valorInvertido + interesGanado;
   }
 }
 
-let valorInvertido = Number(prompt("Ingrese el monto a invertir"));
-let tasaAnual = Number(prompt("Ingrese la tasa anual (ej: 0.6)"));
-let plazo = Number(prompt("Ingrese el plazo de su inversión (en días)"));
-let inversionesSimuladas = [];
+const valorInvertidoInput = document.getElementById("valor");
+const tasaAnualInput = document.getElementById("tasa");
+const plazoInput = document.getElementById("plazo");
+const botonSimular = document.getElementById("simular-pf");
+const valorDolarHoyInput = document.getElementById("dolar-hoy");
+const valorDolarFuturoEstimadoInput = document.getElementById("dolar-futuro");
+const resultado = document.getElementById("resultado");
+const error = document.getElementById("error");
+const simulacionesRecientes = document.getElementById("sim-recientes");
+
+let inversionesSimuladas =
+  JSON.parse(localStorage.getItem("inversiones")) || [];
+
+let nuevaInversion;
+let dolaresComprados;
 let inversionesSimuladasConPlazoMayorA30;
 
-function simularPlazoFijo() {
-  while (tasaAnual <= 0 || tasaAnual > 0.99) {
-    tasaAnual = Number(
-      prompt(
-        "Valor de tasa incorrecto. Por favor, ingrese un valor entre 0.01 y 0.99"
-      )
-    );
+const guardarInversionesEnLocalStorage = () => {
+  localStorage.setItem("inversiones", JSON.stringify(inversionesSimuladas));
+};
+
+const simularPlazoFijo = () => {
+  const valorInvertido = parseFloat(valorInvertidoInput.value);
+  const tasaAnual = parseFloat(tasaAnualInput.value);
+  const plazo = parseFloat(plazoInput.value);
+
+  if (tasaAnual <= 0 || tasaAnual > 0.99 || isNaN(tasaAnual)) {
+    error.innerHTML =
+      "Valor de tasa incorrecto. Por favor, ingrese un valor entre 0.01 y 0.99";
+    return;
   }
-  let nuevaInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
+  if (isNaN(valorInvertido) || valorInvertido <= 0) {
+    error.innerHTML = "Valor de inversión incorrecto.";
+    return;
+  }
+  if (isNaN(plazo) || plazo <= 0) {
+    error.innerHTML = "Valor de plazo incorrecto.";
+    return;
+  }
+
+  nuevaInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
   inversionesSimuladas.push(nuevaInversion);
-  return nuevaInversion.calculoPlazoFijo();
-}
 
-console.log(simularPlazoFijo());
-console.log(inversionesSimuladas);
+  // Limpia el mensaje de error
+  error.innerHTML = "";
 
-inversionesSimuladasConPlazoMayorA30 = inversionesSimuladas.filter(
-  (el) => el.plazo > 30
-);
-console.log(inversionesSimuladasConPlazoMayorA30);
+  dolaresComprados = valorInvertido / valorDolarHoyInput.value;
+  const valorInversionFinalDolares =
+    dolaresComprados * valorDolarFuturoEstimadoInput.value;
 
-let valorDolarHoy = Number(prompt("Ingrese el valor del dolar actualmente"));
-let valorDolarFuturoEstimado = Number(
-  prompt(
-    "Ingrese el valor que estima que se encuentre el dolar al final del plazo"
-  )
-);
-let dolaresComprados = valorInvertido / valorDolarHoy;
-let valorInversionFinalDolares = dolaresComprados * valorDolarFuturoEstimado;
+  let mensaje = "";
 
-console.log(dolaresComprados);
+  if (valorInversionFinalDolares > nuevaInversion.calculoPlazoFijo()) {
+    mensaje =
+      "En este caso, teniendo en cuenta los valores recibidos, es mejor comprar dólares.";
+  } else {
+    mensaje =
+      "En este caso, teniendo en cuenta los valores recibidos, es mejor invertir en plazo fijo.";
+  }
+  resultado.innerHTML = mensaje;
 
-if (valorInversionFinalDolares > simularPlazoFijo()) {
-  alert(
-    "En este caso, teniendo en cuenta los valores recibidos, es mejor comprar dolares."
+  mostrarSimulacionesRecientes();
+  filtrarPlazoMayorA30();
+  guardarInversionesEnLocalStorage();
+
+  // Limpiando los Inputs
+  valorInvertidoInput.value = "";
+  tasaAnualInput.value = "";
+  plazoInput.value = "";
+  valorDolarHoyInput.value = "";
+  valorDolarFuturoEstimadoInput.value = "";
+};
+
+botonSimular.addEventListener("click", simularPlazoFijo);
+
+const filtrarPlazoMayorA30 = () => {
+  inversionesSimuladasConPlazoMayorA30 = inversionesSimuladas.filter(
+    (el) => el.plazo > 30
   );
-} else {
-  alert(
-    "En este caso, teniendo en cuenta los valores recibidos, es mejor invertir en plazo fijo"
-  );
-}
+};
+
+const mostrarSimulacionesRecientes = () => {
+  simulacionesRecientes.innerHTML = "";
+
+  inversionesSimuladas.forEach((inversionSimulada) => {
+    simulacionesRecientes.innerHTML += `
+    Cantidad de dolares: ${Math.round(dolaresComprados)}
+    Valor final PF: ${Math.round(nuevaInversion.calculoPlazoFijo())} 
+    <li>
+     ${JSON.stringify(inversionSimulada, null, " ")} 
+    </li>`;
+  });
+};

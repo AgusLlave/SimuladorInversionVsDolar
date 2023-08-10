@@ -1,0 +1,12 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: antiquewhite;
+  font-family: "Montserrat", sans-serif;
+  gap: 30px;
+}
+
+ul li {
+  list-style: none;
+}
