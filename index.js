@@ -29,10 +29,12 @@ let nuevaInversion;
 let dolaresComprados;
 let inversionesSimuladasConPlazoMayorA30;
 
+// Funcion para guardar las simulaciones generadas en el Local Storage
 const guardarInversionesEnLocalStorage = () => {
   localStorage.setItem("inversiones", JSON.stringify(inversionesSimuladas));
 };
 
+// Funcion principal para el cálculo de la simulación
 const simularPlazoFijo = () => {
   const valorInvertido = parseFloat(valorInvertidoInput.value);
   const tasaAnual = parseFloat(tasaAnualInput.value);
@@ -55,8 +57,7 @@ const simularPlazoFijo = () => {
   nuevaInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
   inversionesSimuladas.push(nuevaInversion);
 
-  // Limpia el mensaje de error
-  error.innerHTML = "";
+  error.innerHTML = ""; // Limpia el mensaje de error
 
   dolaresComprados = valorInvertido / valorDolarHoyInput.value;
   const valorInversionFinalDolares =
@@ -73,6 +74,7 @@ const simularPlazoFijo = () => {
   }
   resultado.innerHTML = mensaje;
 
+  // Llamado a las funciones
   mostrarSimulacionesRecientes();
   filtrarPlazoMayorA30();
   guardarInversionesEnLocalStorage();
@@ -85,22 +87,25 @@ const simularPlazoFijo = () => {
   valorDolarFuturoEstimadoInput.value = "";
 };
 
+// Evento
 botonSimular.addEventListener("click", simularPlazoFijo);
 
+// Funcion para filtrar las inversiones con plazo +30
 const filtrarPlazoMayorA30 = () => {
   inversionesSimuladasConPlazoMayorA30 = inversionesSimuladas.filter(
     (el) => el.plazo > 30
   );
 };
 
+// Function que muestra las simulaciones recientes en el DOM
 const mostrarSimulacionesRecientes = () => {
   simulacionesRecientes.innerHTML = "";
 
   inversionesSimuladas.forEach((inversionSimulada) => {
     simulacionesRecientes.innerHTML += `
+    <li>
     Cantidad de dolares: ${Math.round(dolaresComprados)}
     Valor final PF: ${Math.round(nuevaInversion.calculoPlazoFijo())} 
-    <li>
      ${JSON.stringify(inversionSimulada, null, " ")} 
     </li>`;
   });

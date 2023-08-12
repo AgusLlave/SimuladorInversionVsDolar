@@ -4,9 +4,43 @@ body {
   align-items: center;
   background-color: antiquewhite;
   font-family: "Montserrat", sans-serif;
-  gap: 30px;
 }
 
 ul li {
   list-style: none;
+}
+
+.texto-titulo {
+  font-size: 34px;
+  margin: 80px 30px 30px 40px;
+}
+
+.texto-subtitulo {
+  font-size: 24px;
+  margin: 50px;
+}
+
+.inputs {
+  margin: 20px;
+}
+
+#valor,
+#tasa,
+#plazo,
+#dolar-hoy,
+#dolar-futuro {
+  border-style: double;
+  border-radius: 15px;
+  background-color: white;
+  text-align: center;
+}
+
+#simular-pf {
+  height: 40px;
+  width: 100px;
+  margin: 25px;
+  border-radius: 15px;
+  margin: 30px;
+  background-color: floralwhite;
+  border-style: double;
 }

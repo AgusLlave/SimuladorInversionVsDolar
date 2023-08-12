@@ -12,44 +12,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
   </head>
     <link rel="stylesheet" href="style.css" />
-    <title>Simulador Plazo Fijo VS Dolar</title>
+    <title>Simulador Plazo Fijo VS Dólar</title>
   </head>
   <body>
-    <h1>Simulador Plazo Fijo VS Dolar</h1>
+    <h1 class="texto-titulo">Simulador Plazo Fijo VS Dólar</h1>
 
-    <h2>Ingrese los valores del plazo fijo que desea simular</h2>
+    <h2 class="texto-subtitulo">Ingrese los valores del plazo fijo que desea simular</h2>
 
-    <div>
-      <h3>Valor a invertir:</h3>
-      <input type="number" id="valor" />
-      <h3>Tasa anual:</h3>
-      <input type="number" id="tasa" />
-      <h3>Plazo:</h3>
-      <input type="number" id="plazo" />
+    <div class="inputs">
+      
+      <input type="number" id="valor" placeholder="Valor a invertir" />
+      
+      <input type="number" id="tasa" placeholder="Tasa anual"/>
+      
+      <input type="number" id="plazo" placeholder="Plazo"/>
     </div>
     
     <div id="error"></div>
 
-    <h2>
-      Por ultimo, ingrese el valor del dolar actual y el valor que considera que
+    <h2 class="texto-subtitulo">
+      Por último, ingrese el valor del dólar actual y el valor que considera que
       tendra al finalizar el plazo
     </h2>
 
-    <div>
-      <h3>Valor del dolar hoy:</h3>
-      <input type="number" id="dolar-hoy" />
-
-      <h3>Valor del dolar futuro estimado:</h3>
-      <input type="number" id="dolar-futuro" />
+    <div class="inputs">
+    
+      <input type="number" id="dolar-hoy" placeholder="Dólar hoy"/>
+      
+      <input type="number" id="dolar-futuro" placeholder="Dólar futuro"/>
     </div>
 
     <button id="simular-pf">Simular</button>
 
     <div id="resultado"></div>
 
-    <h3>Simulaciones recientes:</h3>
+    <h3 class="texto-subtitulo">Simulaciones recientes:</h3>
 
-    <div>
+    <div class="sim-container">
 <ul id="sim-recientes"></ul>
     </div>
 
