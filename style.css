@@ -35,13 +35,33 @@ ul li {
   text-align: center;
 }
 
-#simular-pf {
+.boton {
   height: 40px;
   width: 100px;
   margin: 25px;
   border-radius: 15px;
   margin: 30px;
-  background-color: floralwhite ;
+  background-color: floralwhite;
   border-style: double;
+  &:hover {
+    transform: scale(1.1);
+    background-color: white;
+  }
+}
+.obtener-cotizacion {
+  margin: 30px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
+#resultado {
+  margin: 30px;
+  background-color: white;
+  color: greenyellow;
+  font-size: 20px;
+  font-weight: 1000;
+  border-radius: 10px;
+  border-style: groove;
+  border-color: black;
+}

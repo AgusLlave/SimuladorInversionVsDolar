@@ -13,21 +13,21 @@
   </head>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <title>Simulador Plazo Fijo VS Dólar</title>
+    <title>Simulador Inversión VS Dólar</title>
   </head>
 
   <body>
 
     <header>
-      <h1 class="texto-titulo">Simulador Plazo Fijo VS Dólar</h1>
+      <h1 class="texto-titulo">Simulador Inversión VS Dólar</h1>
     </header>
 
-      <h2 class="texto-subtitulo">Ingrese los valores del plazo fijo que desea simular</h2>
+      <h2 class="texto-subtitulo">Ingrese los valores de la inversión que desea simular</h2>
 
     <div class="inputs">
       <input type="number" id="valor" placeholder="Valor a invertir" />
       <input type="number" id="tasa" placeholder="Tasa anual"/>
-      <input type="number" id="plazo" placeholder="Plazo"/>
+      <input type="number" id="plazo" placeholder="Plazo (dias)"/>
     </div>
     
     <div id="error"></div>
@@ -37,6 +37,12 @@
       tendra al finalizar el plazo
     </h2>
 
+    <div class="obtener-cotizacion">
+      <p>Haga click para obtener el valor del dólar oficial actual </p>
+      <button class="boton" id="button-api">Obtener</button>
+      <div id="valor-dolar-actual"></div>
+    </div>
+
     <div class="inputs">
       <input type="number" id="dolar-hoy" placeholder="Dólar hoy"/>
       <input type="number" id="dolar-futuro" placeholder="Dólar futuro"/>
@@ -44,9 +50,9 @@
 
     <div id="error-dol"></div>
 
-    <button id="simular-pf">Simular</button>
+    <button class="boton" id="simular-inv">Simular</button>
 
-    <div id="resultado"><Strong></Strong></div>
+    <div id="resultado"></div>
 
     <h3 class="texto-subtitulo">Simulaciones recientes:</h3>
 

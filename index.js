@@ -1,11 +1,11 @@
-class PlazoFijo {
+class Inversion {
   constructor(valorInvertido, tasaAnual, plazo) {
     this.valorInvertido = valorInvertido;
     this.tasaAnual = tasaAnual;
     this.plazo = plazo;
   }
 
-  calculoPlazoFijo() {
+  calculoInversion() {
     const interesGanado =
       (this.valorInvertido * this.tasaAnual * this.plazo) / 365;
     return this.valorInvertido + interesGanado;
@@ -15,13 +15,15 @@ class PlazoFijo {
 const valorInvertidoInput = document.getElementById("valor");
 const tasaAnualInput = document.getElementById("tasa");
 const plazoInput = document.getElementById("plazo");
-const botonSimular = document.getElementById("simular-pf");
+const botonSimular = document.getElementById("simular-inv");
 const valorDolarHoyInput = document.getElementById("dolar-hoy");
 const valorDolarFuturoEstimadoInput = document.getElementById("dolar-futuro");
 const resultado = document.getElementById("resultado");
 const error = document.getElementById("error");
 const errorDolar = document.getElementById("error-dol");
 const simulacionesRecientes = document.getElementById("sim-recientes");
+const botonObtenerValorDolar = document.getElementById("button-api");
+const valorDolarActual = document.getElementById("valor-dolar-actual");
 
 let inversionesSimuladas =
   JSON.parse(localStorage.getItem("inversiones")) || [];
@@ -31,16 +33,16 @@ let dolaresComprados;
 let inversionesSimuladasConPlazoMayorA30;
 
 // Funcion principal para el cálculo de la simulación
-const simularPlazoFijo = () => {
+const simularInversion = () => {
   const valorInvertido = parseFloat(valorInvertidoInput.value);
   const tasaAnual = parseFloat(tasaAnualInput.value);
   const plazo = parseFloat(plazoInput.value);
   const valorDolarHoy = parseFloat(valorDolarHoyInput.value);
   const valorDolarFuturo = parseFloat(valorDolarFuturoEstimadoInput.value);
 
-  if (tasaAnual <= 0 || tasaAnual > 0.99 || isNaN(tasaAnual)) {
+  if (tasaAnual <= 0 || tasaAnual > 1.99 || isNaN(tasaAnual)) {
     error.innerHTML =
-      "Valor de tasa incorrecto. Por favor, ingrese un valor entre 0.01 y 0.99";
+      "Valor de tasa incorrecto. Por favor, ingrese un valor entre 0.01 y 1.99. (Ej: 30% -> 0.3)";
     return;
   } else if (isNaN(valorInvertido) || valorInvertido <= 0) {
     error.innerHTML = "Valor de inversión incorrecto.";
@@ -56,12 +58,12 @@ const simularPlazoFijo = () => {
     return;
   }
 
-  nuevaInversion = new PlazoFijo(valorInvertido, tasaAnual, plazo);
+  nuevaInversion = new Inversion(valorInvertido, tasaAnual, plazo);
 
   dolaresComprados = valorInvertido / valorDolarHoy;
 
   nuevaInversion.dolaresComprados = dolaresComprados;
-  nuevaInversion.valorFinalPF = nuevaInversion.calculoPlazoFijo();
+  nuevaInversion.valorFinalInversion = nuevaInversion.calculoInversion();
 
   inversionesSimuladas.push(nuevaInversion);
 
@@ -69,12 +71,12 @@ const simularPlazoFijo = () => {
 
   let mensaje = "";
 
-  if (valorInversionFinalDolares > nuevaInversion.calculoPlazoFijo()) {
+  if (valorInversionFinalDolares > nuevaInversion.calculoInversion()) {
     mensaje =
       "En este caso, teniendo en cuenta los valores recibidos, es mejor comprar dólares.";
   } else {
     mensaje =
-      "En este caso, teniendo en cuenta los valores recibidos, es mejor invertir en plazo fijo.";
+      "En este caso, teniendo en cuenta los valores recibidos, es mejor realizar la inversión.";
   }
 
   resultado.innerHTML = mensaje;
@@ -95,29 +97,7 @@ const simularPlazoFijo = () => {
   valorDolarFuturoEstimadoInput.value = "";
 };
 
-// Evento que llama a la funcion principal + Toastify
-botonSimular.addEventListener("click", () => {
-  simularPlazoFijo();
-  if (inversionesSimuladas.includes(nuevaInversion)) {
-    Toastify({
-      text: "Simulación exitosa",
-      duration: 3000,
-      style: {
-        background: "linear-gradient(to right, #00b09b, #96c93d)",
-      },
-    }).showToast();
-  } else {
-    Toastify({
-      text: "Simulación fallida",
-      duration: "3000",
-      style: {
-        background: "#f15c5c",
-      },
-    }).showToast();
-  }
-});
-
-// Funcion para filtrar las inversiones con plazo +30
+// Funcion para filtrar las inversiones con plazo +30 (No le di ningun uso en sitio todavia)
 const filtrarPlazoMayorA30 = () => {
   inversionesSimuladasConPlazoMayorA30 = inversionesSimuladas.filter(
     (el) => el.plazo > 30
@@ -139,7 +119,9 @@ const mostrarSimulacionesRecientes = () => {
     <em>Cantidad de dolares:</em> ${Math.round(
       inversionSimulada.dolaresComprados
     )} 
-    <em>Valor final PF:</em> ${Math.round(inversionSimulada.valorFinalPF)} 
+    <em>Valor final Inversion:</em> ${Math.round(
+      inversionSimulada.valorFinalInversion
+    )} 
     <em>Valor invertido:</em> ${inversionSimulada.valorInvertido} 
     <em>Tasa:</em> ${inversionSimulada.tasaAnual} 
     <em>Plazo:</em> ${inversionSimulada.plazo} 
@@ -147,3 +129,49 @@ const mostrarSimulacionesRecientes = () => {
     <hr />`;
   });
 };
+
+//Función que solicita la API para obtener el valor USD/ARS
+const obtenerValorDolarHoy = async () => {
+  const url =
+    "https://currency-exchange.p.rapidapi.com/exchange?from=USD&to=ARS&q=1.0";
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "5ad1dca026mshf81a88816ae260cp144f49jsn17bd7a014b58",
+      "X-RapidAPI-Host": "currency-exchange.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const result = await response.text();
+    valorDolarHoyInput.value = Math.round(Number(result));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Evento que llama a la funcion principal + Toastify
+botonSimular.addEventListener("click", () => {
+  simularInversion();
+  if (inversionesSimuladas.includes(nuevaInversion)) {
+    Toastify({
+      text: "Simulación exitosa",
+      duration: 3000,
+      style: {
+        background: "linear-gradient(to right, #00b09b, #96c93d)",
+      },
+    }).showToast();
+  } else {
+    Toastify({
+      text: "Simulación fallida",
+      duration: "3000",
+      style: {
+        background: "#f15c5c",
+      },
+    }).showToast();
+  }
+});
+
+// Evento que llama a la API para obtener la cotización del dolar
+botonObtenerValorDolar.addEventListener("click", obtenerValorDolarHoy);
